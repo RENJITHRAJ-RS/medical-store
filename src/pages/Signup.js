@@ -12,10 +12,25 @@ function Signup() {
       return;
     }
 
-    localStorage.setItem(
-      "registeredUser",
-      JSON.stringify({ username, password })
+    // Get existing users or empty array
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+
+    // Check if username already exists
+    const userExists = users.find(
+      u => u.username === username
     );
+
+    if (userExists) {
+      alert("Username already exists. Please login.");
+      navigate("/");
+      return;
+    }
+
+    // Add new user
+    users.push({ username, password });
+
+    // Save users list
+    localStorage.setItem("users", JSON.stringify(users));
 
     alert("Signup successful! Please login.");
     navigate("/");
@@ -23,7 +38,7 @@ function Signup() {
 
   return (
     <div className="auth-container">
-      <h2>Signup</h2>
+      <h2>Create Account</h2>
 
       <input
         placeholder="Username"
@@ -39,11 +54,11 @@ function Signup() {
       />
 
       <button onClick={handleSignup}>Signup</button>
+      <p>Already have an account?</p>
 
       <div className="auth-link">
-        <p>Already have an account?</p>
         <button onClick={() => navigate("/")}>
-          Go to Login
+           Sign in
         </button>
       </div>
     </div>

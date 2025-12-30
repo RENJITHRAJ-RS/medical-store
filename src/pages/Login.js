@@ -10,23 +10,22 @@ function Login() {
   const navigate = useNavigate();
 
   const handleLogin = () => {
-    const savedUser = JSON.parse(localStorage.getItem("registeredUser"));
+    // Get users list
+    const users = JSON.parse(localStorage.getItem("users")) || [];
 
-    if (!savedUser) {
-      alert("No account found. Please signup.");
-      navigate("/signup");
+    // Find valid user
+    const validUser = users.find(
+      u => u.username === username && u.password === password
+    );
+
+    if (!validUser) {
+      alert("Invalid username or password");
       return;
     }
 
-    if (
-      savedUser.username === username &&
-      savedUser.password === password
-    ) {
-      dispatch(login({ username }));
-      navigate("/dashboard");
-    } else {
-      alert("Invalid username or password");
-    }
+    // Login success
+    dispatch(login({ username: validUser.username }));
+    navigate("/dashboard");
   };
 
   return (
@@ -49,9 +48,8 @@ function Login() {
       <button onClick={handleLogin}>Login</button>
 
       <div className="auth-link">
-        <p>Don't have an account?</p>
         <button onClick={() => navigate("/signup")}>
-          Create Account
+          Create New Account
         </button>
       </div>
     </div>
